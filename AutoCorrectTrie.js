@@ -181,8 +181,26 @@ class Node {
     }
 }
 
-module.exports = (word) => {
-    let trie = new Trie(text);
+var readline = require('readline');
 
-    return trie.autoCorrect(word);
-};
+let trie = new Trie(text);
+
+var rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+
+rl.question(">>Type something  ", function(answer) {
+    let result = answer.split(' ').map(el => {
+        let suggestedWords = trie.autoCorrect(el);
+        if (suggestedWords.length > 0) {
+            return suggestedWords[0];
+        }
+        else {
+            return el;
+        }
+    })
+    .join(' ');
+    console.log(`Did you mean: \'${result}\'?`);
+    rl.close();
+});
