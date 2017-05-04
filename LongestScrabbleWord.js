@@ -1,6 +1,6 @@
 var fs = require('fs');
 //Create array of each word
-var text = fs.readFileSync("./enable1.txt", "utf-8").split('\n');
+var text = fs.readFileSync("./files/enable1.txt", "utf-8").split('\n');
 
 //Create hashmap to quickly look up whether a substring of a word is valid.
 var map = {};
