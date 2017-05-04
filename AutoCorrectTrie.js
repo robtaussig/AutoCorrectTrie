@@ -191,6 +191,7 @@ var rl = readline.createInterface({
 });
 
 rl.question(">>Type something  ", function(answer) {
+    let timeNow = new Date();
     let result = answer.split(' ').map(el => {
         let suggestedWords = trie.autoCorrect(el);
         if (suggestedWords.length > 0) {
@@ -201,6 +202,8 @@ rl.question(">>Type something  ", function(answer) {
         }
     })
     .join(' ');
+    let timeAfter = new Date();
     console.log(`Did you mean: \'${result}\'?`);
+    console.log(`Performed in ${timeAfter - timeNow}ms`);
     rl.close();
 });
