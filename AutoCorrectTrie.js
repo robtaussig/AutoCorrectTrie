@@ -7,11 +7,6 @@ class Trie {
         this.trie = {};
         this.validWords = validWords;
         this.createNodes();
-        this.closenessMap = [
-            ['q','w','e','r','t','y','u','i','o','p'],
-            ['a','s','d','f','g','h','j','k','l'],
-            ['z','x','c','v','b','n','m']
-        ];
         this.closenessMap = {
             a: {x:1,y:0}, b: {x:2,y:4}, c: {x:2,y:2}, d: {x:1,y:2}, e: {x:0,y:2}, 
             f: {x:1,y:3}, g: {x:1,y:4}, h: {x:1,y:5}, i: {x:0,y:7}, j: {x:1,y:6}, 
