@@ -33,4 +33,4 @@ module.exports =  class Node {
     setIsWord() {
         this.isWord = true;
     }
-}
+};
