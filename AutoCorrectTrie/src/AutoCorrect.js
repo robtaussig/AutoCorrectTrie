@@ -108,6 +108,11 @@ module.exports = class AutoCorrect {
 
     suggestWords(word) {
         if (typeof word !== 'string' || word.length < 1) return [];
+        let upperCase = false;
+        if (word[0] === word[0].toUpperCase()) {
+            upperCase = true;
+            word = word.toLowerCase();
+        }
         let suggestedWords = [];
         if (this.isValidWord(word)) {
             return [word];
@@ -119,6 +124,11 @@ module.exports = class AutoCorrect {
                 suggestedWords = suggestedWords.concat(alternativeWords);
             }
         }
+        if (upperCase) {
+            suggestedWords = suggestedWords.map(el => {
+                return el[0].toUpperCase() + el.slice(1).toLowerCase();
+            });
+        }
         return this.sortWordsByLikelihood(suggestedWords, word);
     }
-}
+};
