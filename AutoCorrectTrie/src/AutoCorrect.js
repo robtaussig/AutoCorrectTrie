@@ -68,7 +68,6 @@ module.exports = class AutoCorrect {
     }
 
     isValidWord(word) {
-        console.log(word);
         if (typeof word !== 'string' || word.length < 1) return false;
         let currentNode = this.trie.nodes[word[0].toLowerCase()];
         for (let i = 1; i < word.length; i++) {
@@ -102,17 +101,22 @@ module.exports = class AutoCorrect {
     sortWordsByLikelihood(suggestedWords, word) {
 
         return suggestedWords.sort((a,b) => {
-            return this.measureClosesness(a, word) - this.measureClosesness(b, word);
+            return this.measureClosesness(a.replace(/\W/g, ''), word.replace(/\W/g, '')) - this.measureClosesness(b.replace(/\W/g, ''), word.replace(/\W/g, ''));
         });
     }
 
     suggestWords(word) {
         if (typeof word !== 'string' || word.length < 1) return [];
+        //Test for uppercase. If so, remember that and recapitalize after search.
         let upperCase = false;
         if (word[0] === word[0].toUpperCase()) {
             upperCase = true;
             word = word.toLowerCase();
         }
+        let punctuation = word.match(/[^A-Za-z]/);
+
+        word = word.replace(/\W/g, '');
+
         let suggestedWords = [];
         if (this.isValidWord(word)) {
             return [word];
@@ -127,6 +131,11 @@ module.exports = class AutoCorrect {
         if (upperCase) {
             suggestedWords = suggestedWords.map(el => {
                 return el[0].toUpperCase() + el.slice(1).toLowerCase();
+            });
+        }
+        if (punctuation) {
+            suggestedWords = suggestedWords.map(el => {
+                return punctuation.index === 0 ? punctuation[0] + el : el + punctuation[0];
             });
         }
         return this.sortWordsByLikelihood(suggestedWords, word);
