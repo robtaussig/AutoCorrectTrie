@@ -1,22 +1,15 @@
 module.exports =  class Node {
-    constructor(value, prev) {
+    constructor(value) {
         this.next = {};
-        this.prev = prev;
         this.isWord = false;
-        this.value = value.toLowerCase();
-        if (prev) {
-            this.string = prev.string + this.value;
-        }
-        else {
-            this.string = this.value;
-        }
+        this.value = value;
     }
 
     moveToOrCreateNode(value) {
         let returnValue;
         //Create new node if it doesn't exist
         if (!this.next[value]) {
-            returnValue = new Node(value, this);
+            returnValue = new Node(value);
             this.next[value] = returnValue;
         }
         //Otherwise, move to it
