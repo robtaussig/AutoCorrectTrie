@@ -1,5 +1,5 @@
 var fs = require('fs');
-const dictionary = fs.readFileSync("../files/dictionary.txt", "utf-8").split('\n');
+const dictionary = fs.readFileSync("./files/dictionary.txt", "utf-8").split('\n');
 var readline = require('readline');
 const AutoCorrect = require('./src/AutoCorrect.js');
 
