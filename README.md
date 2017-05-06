@@ -3,10 +3,10 @@
 ## Features:
 - Implements a Trie datastructure to map every word in a given text file as valid. From a dictionary of 172,824 words, 387,888 nodes are created, each containing 5 properties: 
     1) next - points to all nodes containing valid letter continuations).
-    2) prev - points to the previous node. This is definitely not required, and in fact creates a circular reference so it's ill advised. Future plans involve removing this and storing a reference to previous nodes in a temporary variable in cases where we need to travel 'back.'
+    2) ~~prev~~ - Removed both because it is not necessary and creates a circular reference.
     3) isWord - indicates whether the currentNode marks the completion of a word, even if there are still possible nodes to explore.
-    4) value - also not required as each node's value can be derived from the key held by the node that points to it, but for now it is helpful for conceptualizing everything.
-    5) string - the resultant string from traveling to any specific node. Also not necessary, as any word can be derived from the path taken to any particular node. But for now, it is helpful.
+    4) value - Not required as each node's value can be derived from the key held by the node that points to it, but for now it is helpful for conceptualizing everything.
+    5) ~~string~~ - Removed because it is unnecessary and takes up a lot of space considering it is merely a small convenience. Words can still be reconstructed based on path to node.
 
 - Capable of returning an array of suggested words, sorted by their likelihood of being the intended word (if the original word is not valid). For now, this is based on the proximity of the mistyped characters to the possible alternatives on a keyboard.
 - Can also take a sentence and auto-replace all invalid words with the most likely alternative based on the above heuristic. An example is below.
