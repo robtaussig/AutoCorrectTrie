@@ -55,13 +55,15 @@ module.exports = class AutoCorrect {
         for (let i = 0; i < validAlternativeNodes.length; i++) {
             let depth = 1;
             let currentNode = validAlternativeNodes[i];
+            let subString = word.slice(0,position) + currentNode.value;
             while (currentNode.next[word[position + depth]] && position + depth < word.length) {
                 currentNode = currentNode.next[word[position + depth]];
+                subString += currentNode.value;
                 depth++;
             }
             //If hit the word length and is a valid word, push into relatives array
             if (position + depth === word.length && currentNode.checkIsWord()) {
-                relatives.push(currentNode.string);
+                relatives.push(subString);
             }
         }
         return relatives;

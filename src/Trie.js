@@ -17,7 +17,7 @@ module.exports =  class Trie {
                 currentNode = this.nodes[firstLetter];
             }
             else {
-                currentNode = new Node(firstLetter, null);
+                currentNode = new Node(firstLetter);
                 this.nodes[firstLetter] = currentNode;
             }
             for (let j = 1; j < currentWord.length; j++) {
