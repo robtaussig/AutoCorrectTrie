@@ -14,7 +14,7 @@ module.exports = class AutoCorrect {
                 return suggestedWords[0];
             }
             else {
-                return el;
+                return el + '*';
             }
         })
         .join(' ');
