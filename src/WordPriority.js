@@ -1,5 +1,11 @@
+const MarkovChain = require('./MarkovChain.js');
+
 module.exports =  class WordPriority {
-    constructor() {
+    constructor(exampleText = false) {
+        if (exampleText) {
+            this.markovChain = new MarkovChain(exampleText);
+        }
+        
         this.closenessMap = {
             a: {x:1,y:0}, b: {x:2,y:4}, c: {x:2,y:2}, d: {x:1,y:2}, e: {x:0,y:2}, 
             f: {x:1,y:3}, g: {x:1,y:4}, h: {x:1,y:5}, i: {x:0,y:7}, j: {x:1,y:6}, 
