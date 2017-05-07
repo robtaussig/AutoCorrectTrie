@@ -2,22 +2,30 @@ const Trie = require('./Trie.js');
 const WordPriority = require('./WordPriority.js');
 
 module.exports = class AutoCorrect {
-    constructor(validWords) {
+    constructor(validWords, exampleText = false) {
         this.trie = new Trie(validWords);
-        this.wordPriority = new WordPriority();
+        this.wordPriority = new WordPriority(exampleText);
     }
 
     correctSentence(sentence) {
-        return sentence.split(' ').map(el => {
-            let suggestedWords = this.suggestWords(el);
+        let currentSentence = [];
+        let sentenceArray = sentence.split(' ');
+        for (let i = 0; i < sentenceArray.length; i++) {
+            let currentWord = sentenceArray[i];
+            let suggestedWords = this.suggestWords(currentWord);
             if (suggestedWords.length > 0) {
-                return suggestedWords[0];
+                let sortedWords = suggestedWords.sort((a,b) => {
+                    let aCloseness = this.wordPriority.wordProbability(currentSentence[i - 1], a);
+                    let bCloseness = this.wordPriority.wordProbability(currentSentence[i - 1], b);
+                    return this.wordPriority.wordProbability(currentSentence[i - 1], b) - this.wordPriority.wordProbability(currentSentence[i - 1], a);
+                });
+                currentSentence.push(sortedWords[0]);
             }
             else {
-                return el + '*';
+                currentSentence.push(currentWord + '*');
             }
-        })
-        .join(' ');
+        }
+        return currentSentence.join(' ');
     }
 
     findValidAlternativeNodes(word, position) {
@@ -103,7 +111,9 @@ module.exports = class AutoCorrect {
     sortWordsByLikelihood(suggestedWords, word) {
 
         return suggestedWords.sort((a,b) => {
-            return this.measureClosesness(a.replace(/\W/g, ''), word.replace(/\W/g, '')) - this.measureClosesness(b.replace(/\W/g, ''), word.replace(/\W/g, ''));
+            let keyboardClosenessA = this.measureClosesness(a.replace(/\W/g, ''), word.replace(/\W/g, ''));
+            let keyboardClosenessB = this.measureClosesness(b.replace(/\W/g, ''), word.replace(/\W/g, ''));
+            return keyboardClosenessA - keyboardClosenessB;
         });
     }
 
