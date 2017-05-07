@@ -3,7 +3,12 @@ const MarkovChain = require('./MarkovChain.js');
 module.exports =  class WordPriority {
     constructor(exampleText = false) {
         if (exampleText) {
-            this.markovChain = new MarkovChain(exampleText);
+            this.markovChain = new MarkovChain(exampleText, true);
+            this.hasSample = true;
+        }
+        else {
+            this.markovChain = false;
+            this.hasSample = false;
         }
         
         this.closenessMap = {
@@ -14,5 +19,21 @@ module.exports =  class WordPriority {
             u: {x:0,y:6}, v: {x:2,y:3}, w: {x:0,y:1}, x: {x:2,y:1}, y: {x:0,y:5}, 
             z: {x:2,y:0}
         };
+    }
+
+    measureClosenessByMarkovChain(initialWord, followupWords) {
+        return this.markovChain.sortByMostLikelyNextWord(initialWord, followupWords);
+    }
+
+    wordProbability(firstWord, secondWord) {
+        if (!firstWord) {
+            return this.markovChain.sentenceStarters[secondWord] || 0;
+        }
+        else if (this.markovChain && this.markovChain.chain[firstWord]) {
+            return this.markovChain.chain[firstWord][secondWord] || 0;
+        }
+        else {
+            return 0;
+        }
     }
 };
