@@ -49,10 +49,12 @@ Performed in 11ms
 
 (Sample text: kafka.txt)
 Input: hwre is an exanple of tge resolts beinf afcected by the sanple tects becaust ve czn see thet ude wordd differebtly
+
 Output: here is an example of the results being affected by the sample texts because he can see that use words differently
 
 (Sample text: tumblr.txt)
 Input: hwre is an exanple of tge resolts beinf afcected by the sanple tects becaust ve czn see thet ude wordd differebtly
+
 Output: here is an example of the results being affected by the sample texts because we can see they use words differently
 
 The first difference is after the word 'because.' If we look at Kafka's markov chain for that word, we get this:
