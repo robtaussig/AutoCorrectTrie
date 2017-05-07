@@ -14,11 +14,11 @@ let exampleText = "./files/tumblr.txt";
 
 const autoCorrect = new AutoCorrect(dictionary, exampleText);
 
-rl.question(">>Type something  ", function(answer) {
+rl.question(">>Input: ", function(answer) {
     let timeNow = new Date();
     let result = autoCorrect.correctSentence(answer);
     let timeAfter = new Date();
-    console.log(`Did you mean: \'${result}\'?`);
+    console.log(`Output: \'${result}\'`);
     console.log(`Performed in ${timeAfter - timeNow}ms`);
     rl.close();
 });
