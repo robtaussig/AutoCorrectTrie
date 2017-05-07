@@ -98,10 +98,11 @@ module.exports = class AutoCorrect {
         let secondUniqueLetter;
         for (let i = 0; i < word1.length; i++) {
             if (word1[i] !== word2[i]) {
-                firstUniqueLetter = word1[i];
-                secondUniqueLetter = word2[i];
+                firstUniqueLetter = word1[i].toLowerCase();
+                secondUniqueLetter = word2[i].toLowerCase();
             }
         }
+
         let xDiff = Math.abs(this.wordPriority.closenessMap[firstUniqueLetter].x - this.wordPriority.closenessMap[secondUniqueLetter].x);
         let yDiff = Math.abs(this.wordPriority.closenessMap[firstUniqueLetter].y - this.wordPriority.closenessMap[secondUniqueLetter].y);
         let closeness = Math.sqrt(Math.pow(xDiff,2) + Math.pow(yDiff,2));
