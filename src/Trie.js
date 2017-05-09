@@ -23,6 +23,7 @@ module.exports =  class Trie {
             for (let j = 1; j < currentWord.length; j++) {
                 currentNode = currentNode.moveToOrCreateNode(currentWord[j]);
             }
+            currentNode.commonality = i;
             currentNode.setIsWord();
         }
     }

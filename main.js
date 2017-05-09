@@ -1,5 +1,5 @@
 var fs = require('fs');
-const dictionary = fs.readFileSync("./files/dictionary.txt", "utf-8").split('\n');
+const dictionary = fs.readFileSync("./files/common-dictionary.txt", "utf-8").split('\n');
 var readline = require('readline');
 const AutoCorrect = require('./src/AutoCorrect.js');
 
@@ -20,3 +20,8 @@ rl.question(">>Input: ", function(answer) {
     console.log(`Performed in ${timeAfter - timeNow}ms`);
     rl.close();
 });
+// let a = new Date();
+// let results = autoCorrect.findAlternativesByTwoDepth('bellicodw',2);
+// let b = new Date();
+// console.log(results);
+// console.log(b - a);
