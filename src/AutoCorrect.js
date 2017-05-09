@@ -15,8 +15,6 @@ module.exports = class AutoCorrect {
             let suggestedWords = this.suggestWords(currentWord);
             if (suggestedWords.length > 0) {
                 let sortedWords = suggestedWords.sort((a,b) => {
-                    let aCloseness = this.wordPriority.wordProbability(currentSentence[i - 1], a);
-                    let bCloseness = this.wordPriority.wordProbability(currentSentence[i - 1], b);
                     return this.wordPriority.wordProbability(currentSentence[i - 1], b) - this.wordPriority.wordProbability(currentSentence[i - 1], a);
                 });
                 currentSentence.push(sortedWords[0]);
