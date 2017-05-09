@@ -43,12 +43,13 @@
 
 ## Example input:
 
-I hsve a hatd tkme xoming ul witg grdat exanples, byt heee iz a lomg sentrnce witg puncfuation. Anf capitsl letrers. Nwxt strp iz tl checj fpr worfs futther thab onw devistion awwy.
+>>Input: I wjkl nevrr understtnf wht somw peoklr preeer Ditt Sida. Wht nlt jusr ddynk qater?
 
 ## Output:
 
-Did you mean: 'I have a hard time coming up with great examples, but here is a long sentence with punctuation. And capital letters. Next step is to check for words further than one deviation away.'?
-Performed in 11ms
+
+Output: 'I will never understand why some people prefer Diet Soda. Why not just drink water?'
+Performed in 62ms
 
 ## Example input with accompanying sample text:
 

@@ -191,7 +191,10 @@ module.exports = class AutoCorrect {
         word = word.replace(/\W/g, '');
 
         let suggestedWords = [];
-        if (this.isValidWord(word) && word.length > 2) {
+        if (this.isValidWord(word) && (word.length > 2 || word.length === 1)) {
+            if (upperCase) {
+                word = word.toUpperCase();
+            }
             return [word];
         }
         else {
