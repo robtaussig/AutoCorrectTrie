@@ -14,13 +14,25 @@ module.exports = class AutoCorrect {
             let currentWord = sentenceArray[i];
             let suggestedWords = this.suggestWords(currentWord);
             if (suggestedWords.length > 0) {
-                let sortedWords = suggestedWords.sort((a,b) => {
+                let sortedWords = [].slice.apply(suggestedWords).sort((a,b) => {
                     return this.wordPriority.wordProbability(currentSentence[i - 1], b) - this.wordPriority.wordProbability(currentSentence[i - 1], a);
                 });
-                currentSentence.push(sortedWords[0]);
+                let bestWord = this.determineBestWord(suggestedWords, sortedWords);
+                currentSentence.push(bestWord);
             }
             else {
-                currentSentence.push(currentWord + '*');
+                suggestedWords = Array.from(this.findAlternativesByTwoDepth(currentWord));
+                if (suggestedWords.length > 0) {
+                    let sortedWords = [].slice.apply(suggestedWords).sort((a,b) => {
+                        return this.wordPriority.wordProbability(currentSentence[i - 1], b) - this.wordPriority.wordProbability(currentSentence[i - 1], a);
+                    });
+                    let bestWord = this.determineBestWord(suggestedWords, sortedWords);
+                    currentSentence.push(bestWord);
+                }
+                else {
+                    currentSentence.push(currentWord + '*');
+                }
+                
             }
         }
         return currentSentence.join(' ');
@@ -116,6 +128,56 @@ module.exports = class AutoCorrect {
         });
     }
 
+    determineBestWord(suggestedWords, sortedWords) {
+        let wordMap = {};
+        for (let i = 0; i < suggestedWords.length; i++) {
+            wordMap[suggestedWords[i]] = {};
+            wordMap[suggestedWords[i]].commonPosition = this.getWordCommonality(suggestedWords[i]);
+        }
+        let sortedByCommonality = [].slice.apply(suggestedWords).sort((a,b) => {
+            return wordMap[a].commonPosition - wordMap[b].commonPosition;
+        });
+        for (let j = 0; j < suggestedWords.length; j++) {
+            let suggestedWord = suggestedWords[j];
+            wordMap[suggestedWord] = wordMap[suggestedWord] || {};
+            let sortedWord = sortedWords[j];
+            let commonWord = sortedByCommonality[j];
+            wordMap[sortedWord] = wordMap[sortedWord] || {};
+            wordMap[suggestedWord].closenessRank = j;
+            wordMap[sortedWord].probabilityRank = j;
+            wordMap[commonWord].commonRank = j;
+        }
+        let bestWord = '';
+        let bestScore = 1/0.0;
+        for (let k = 0; k < suggestedWords.length; k++) {
+            let currentWord = suggestedWords[k];
+            let closenessScore = wordMap[currentWord].closenessRank;
+            let probabilityScore = wordMap[currentWord].probabilityRank;
+            let commonalityScore = wordMap[currentWord].commonRank;
+            let totalScore = closenessScore + probabilityScore + commonalityScore * 3;
+            if (totalScore < bestScore) {
+                bestWord = currentWord;
+                bestScore = totalScore;
+            }
+        }
+        return bestWord;
+    }
+
+    getWordCommonality(word) {
+        if (typeof word !== 'string' || word.length < 1) return false;
+        let currentNode = this.trie.nodes[word[0].toLowerCase()];
+        for (let i = 1; i < word.length; i++) {
+            let nextNode = currentNode.next[word[i].toLowerCase()];
+            if (nextNode) {
+                currentNode = nextNode;
+            }
+            else {
+                return false;
+            }
+        }
+        return currentNode.commonality;
+    }
+
     suggestWords(word) {
         if (typeof word !== 'string' || word.length < 1) return [];
         //Test for uppercase. If so, remember that and recapitalize after search.
@@ -129,7 +191,7 @@ module.exports = class AutoCorrect {
         word = word.replace(/\W/g, '');
 
         let suggestedWords = [];
-        if (this.isValidWord(word)) {
+        if (this.isValidWord(word) && word.length > 2) {
             return [word];
         }
         else {
@@ -150,5 +212,29 @@ module.exports = class AutoCorrect {
             });
         }
         return this.sortWordsByLikelihood(suggestedWords, word);
+    }
+
+    findAlternativesByTwoDepth(word) {
+        let alternatives = this.findPermutations(word);
+        let results = new Set();
+        for (let i = 0; i < alternatives.length; i++) {
+            let choices = this.suggestWords(alternatives[i]);
+            for (let j = 0; j < choices.length; j++) {
+                results.add(choices[j]);
+            }
+        }
+        return results;
+    }
+
+    findPermutations(word) {
+        let alternatives = [];
+        let alphabet = "abcdefghijklmnopqrstuvwxyz";
+        for (let i = 0; i < word.length; i++) {
+            for (let j = 0; j < alphabet.length; j++) {
+                let newWord = word.slice(0,i) + alphabet[j] + word.slice(i + 1);
+                alternatives.push(newWord);
+            }
+        }
+        return alternatives;
     }
 };

@@ -2,7 +2,7 @@
 
 ## Summary: 
 
-- Takes a sentence as its input and returns a new sentence, replacing each invalid word with the word most likely intended. It currently calculates this based off of two heuristics:
+- Takes a sentence as its input and returns a new sentence, replacing each invalid word with the word most likely intended. It currently calculates this based off of three heuristics:
     1) The proximity of the mistyped key to the character on a keyboard that would make it a valid word. Example: The input is 'fatner.' Once the program identifies every word that is one deviation away ('father', 'fanner', 'fatter', 'fainer', 'fawner'), it selects 'father' as the most likely answer since 'h' is closer to 'n' compared to the other options ('n' to 't', 't' to 'n', 'i' to 't', and 'w' to 't').
     2) It takes an optional sample text, and creates a complete Markov Chain of the provided text to calculate the odds of specific words combinations. For example, I used an aggregate of my tumblr entries for the following example. A look under the hood for the word 'am' would produce the following object:
 
@@ -25,6 +25,10 @@
 
         So for an input of 'I am mofe comfortable on the weekend.' it would identify 'mofe' as an invalid word, with possible alternatives being 'mode', 'more', 'move', 'mote', 'mome', 'moue', 'moke', 'mole', and 'mope'. Referring to the Markov chain, specifically for the word 'am' (the word that precedes 'mofe' in the input text), it would give 'more' the nod because it has followed the word 'am' once in the sample text (my tumblr account), whereas none of the other words have been used specifically after 'am.' (I was initially confused why 'appointment' would ever follow 'am' but it came from the following sentence: 'I have a 7 am appointment', which reveals a flaw in using Markov chains for this purpose).
 
+    3) The 'commonality' of each word, based on its position in a sorted list of English words (by frequency), which is used to construct the Trie originally (whenever a word is created, it is assigned a property noting its rank).
+
+  For now, I am not as concerned with the exact weight of each heuristic as I am with the functionality of the program. Words are sorted by their 'proximity', 'probability', and 'commonality' and assigned an overall score based on their position in each sorted list. Commonality is weighted 3 times based on early experimentation, as it seems to be the most predictive heuristic.
+
 ## Features:
 - Implements a Trie datastructure to map every word in a given text file as valid. From a dictionary of 172,824 words, 387,888 nodes are created, each containing 5 properties: 
     1) next - points to all nodes containing valid letter continuations).
@@ -32,6 +36,7 @@
     3) isWord - indicates whether the currentNode marks the completion of a word, even if there are still possible nodes to explore.
     4) value - Not required as each node's value can be derived from the key held by the node that points to it, but for now it is helpful for conceptualizing everything.
     5) ~~string~~ - Removed because it is unnecessary and takes up a lot of space considering it is merely a small convenience. Words can still be reconstructed based on path to node.
+    6) Commonality - Position in the list of 10,000 'most common' words in the English dictionary. This helps predict words later on with greater accuracy.
 
 - Capable of returning an array of suggested words, sorted by their likelihood of being the intended word (if the original word is not valid).
 - Can also take a sentence and auto-replace all invalid words with the most likely alternative based on the above heuristic. An example is below.
@@ -90,13 +95,8 @@ Does this mean that the author of tumblr.txt is a better writer than Kafka? I'll
 
 ## Limitations:
 
-1) Currently only suggests words that are one deviation away from the invalid word (if no correction can be found within one deviation, then the word will be returned with an asterisk besides it).
-2) The weight assigned to proximity vs Markov chain probability is not finely tuned right now. I was more concerned with getting the functionality down, and when everything is ready I will go deeper into tweaking everything.
+1) The weight assigned to proximity vs Markov chain probability vs commonality is not finely tuned right now. I was more concerned with getting the functionality down, and when everything is ready I will go deeper into tweaking everything.
 
-## Ideas:
+## To do:
 
-1) Find a dictionary with words sorted by common use, to use as another metric for prioritizing suggestions (will accomplish this by assigning a property to nodes that make a complete word that will align with its position in the dictionary).
-
-2) Increase the scope of suggestions to find words that are 2, 3, or perhaps 4 deviations away from the invalid word.
-
-3) Identify mistakes, even if the mistake happens to create a valid word.
+1) Identify mistakes, even if the mistake happens to create a valid word.
